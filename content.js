@@ -145,7 +145,7 @@ function createYouTubeControlPanel(video) {
     const speedButton = document.createElement('div');
     speedButton.className = 'yt-video-speed-button';
     speedButton.innerHTML = `<i class="fas fa-tachometer-alt"></i> <span class="yt-video-speed-value">${video.playbackRate.toFixed(2)}x</span>`;
-    speedButton.title = `Velocidade: ${video.playbackRate}x`;
+    speedButton.title = `Velocidade: ${video.playbackRate.toFixed(2)}x`;
 
     const speedValueSpan = speedButton.querySelector('.yt-video-speed-value');
     speedValueSpan.style.display = 'none'; // Esconde o valor da velocidade inicialmente
@@ -158,7 +158,22 @@ function createYouTubeControlPanel(video) {
     const adjustSpeed = (delta) => {
         video.playbackRate = Math.max(0.1, Math.min(video.playbackRate + delta, 16));
         updateSpeedTooltip();
+        savePreferredSpeed();
     };
+
+    const savePreferredSpeed = () => {
+        localStorage.setItem('youtubePreferredSpeed', video.playbackRate);
+    };
+
+    const loadPreferredSpeed = () => {
+        const savedSpeed = localStorage.getItem('youtubePreferredSpeed');
+        if (savedSpeed) {
+            video.playbackRate = parseFloat(savedSpeed);
+            updateSpeedTooltip();
+        }
+    };
+
+    loadPreferredSpeed();
 
     speedButton.addEventListener('wheel', (e) => {
         e.preventDefault();
@@ -230,10 +245,30 @@ function createYouTubeControlPanel(video) {
         }
     });
 
+    // Botão de repetição
+    let isLooping = false;
+    const loopButton = createIconButton('fas fa-redo', 'Repetir Vídeo', () => {
+        isLooping = !isLooping;
+        video.loop = isLooping;
+        loopButton.innerHTML = `<i class="fas ${isLooping ? 'fa-sync' : 'fa-redo'}"></i>`;
+        loopButton.title = isLooping ? 'Desativar Repetição' : 'Repetir Vídeo';
+    });
+
+    // Botão de video em popup
+    const popupButton = createIconButton('fas fa-external-link-alt', 'Modo Popup', () => {
+        if (document.pictureInPictureElement) {
+            document.exitPictureInPicture();
+        } else {
+            video.requestPictureInPicture();
+        }
+    });
+
     controlPanel.appendChild(speedButton);
     controlPanel.appendChild(fullScreenButton);
     controlPanel.appendChild(screenshotButton);
     controlPanel.appendChild(boostVolumeButton);
+    controlPanel.appendChild(loopButton);
+    controlPanel.appendChild(popupButton);
 
     const insertPanel = () => {
         const metadataContainer = document.querySelector('#above-the-fold');

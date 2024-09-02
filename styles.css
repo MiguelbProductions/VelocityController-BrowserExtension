@@ -33,7 +33,6 @@
     text-align: center;
     font-size: 14px;
 }
-
 .yt-video-control-panel {
     display: flex;
     justify-content: flex-start;
@@ -76,12 +75,14 @@
     align-items: center;
     justify-content: center;
     transition: color 0.3s ease;
+    position: relative;
 }
 
 .yt-video-speed-value {
+    display: none;
     margin-left: 5px;
-}
-
-.yt-video-speed-button:hover {
-    color: var(--yt-spec-call-to-action); /* Destaque adaptado ao tema */
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    transform: scale(0);
+    opacity: 0;
+    white-space: nowrap;
 }
