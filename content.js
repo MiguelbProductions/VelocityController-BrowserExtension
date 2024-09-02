@@ -12,16 +12,8 @@ controlPanel.style.alignItems = 'center';
 controlPanel.style.zIndex = '10000';
 controlPanel.style.fontSize = '14px';
 controlPanel.style.fontFamily = 'Arial, sans-serif';
-controlPanel.style.transition = 'opacity 0.3s';
-
-// Estilos para hover e ocultação
-controlPanel.style.opacity = '0';
-controlPanel.addEventListener('mouseenter', () => {
-    controlPanel.style.opacity = '1';
-});
-controlPanel.addEventListener('mouseleave', () => {
-    controlPanel.style.opacity = '0.5';
-});
+controlPanel.style.transition = 'opacity 0.3s, top 0.3s, right 0.3s';
+controlPanel.style.opacity = '0.5';
 
 // Cria o botão de diminuir velocidade
 const slowDownButton = document.createElement('button');
@@ -47,6 +39,18 @@ speedUpButton.style.cursor = 'pointer';
 speedUpButton.style.padding = '2px 6px';
 speedUpButton.style.fontSize = '16px';
 
+// Cria o botão de redefinir velocidade
+const resetButton = document.createElement('button');
+resetButton.innerText = 'Reset';
+resetButton.style.marginLeft = '10px';
+resetButton.style.backgroundColor = 'transparent';
+resetButton.style.color = 'white';
+resetButton.style.border = '1px solid white';
+resetButton.style.borderRadius = '3px';
+resetButton.style.cursor = 'pointer';
+resetButton.style.padding = '2px 6px';
+resetButton.style.fontSize = '16px';
+
 // Cria o display da velocidade atual
 const speedDisplay = document.createElement('span');
 speedDisplay.innerText = '1.0x';
@@ -57,57 +61,67 @@ speedDisplay.style.fontWeight = 'bold';
 controlPanel.appendChild(slowDownButton);
 controlPanel.appendChild(speedDisplay);
 controlPanel.appendChild(speedUpButton);
+controlPanel.appendChild(resetButton);
 
 // Adiciona o painel de controle ao vídeo
-const videoContainer = document.querySelector('video').parentElement;
+const video = document.querySelector('video');
+const videoContainer = video.parentElement;
 videoContainer.style.position = 'relative';
 videoContainer.appendChild(controlPanel);
 
 // Função para atualizar a velocidade do vídeo e o display
 const updateSpeed = (newSpeed) => {
-    const video = document.querySelector('video');
     if (video) {
         video.playbackRate = newSpeed;
         speedDisplay.innerText = `${newSpeed.toFixed(1)}x`;
+        localStorage.setItem('preferredSpeed', newSpeed); // Salva a velocidade no armazenamento local
     }
 };
 
 // Eventos para os botões de controle
 slowDownButton.addEventListener('click', () => {
-    const video = document.querySelector('video');
-    if (video) {
-        let newSpeed = video.playbackRate - 0.1;
-        newSpeed = newSpeed < 0.1 ? 0.1 : newSpeed;
-        updateSpeed(newSpeed);
-    }
+    let newSpeed = video.playbackRate - 0.1;
+    newSpeed = newSpeed < 0.1 ? 0.1 : newSpeed;
+    updateSpeed(newSpeed);
 });
 
 speedUpButton.addEventListener('click', () => {
-    const video = document.querySelector('video');
-    if (video) {
-        let newSpeed = video.playbackRate + 0.1;
-        updateSpeed(newSpeed);
-    }
+    let newSpeed = video.playbackRate + 0.1;
+    updateSpeed(newSpeed);
 });
 
-// Define a posição do painel de controle
+resetButton.addEventListener('click', () => {
+    updateSpeed(1.0);
+});
+
+// Função para reposicionar o painel de controle
 const positionControlPanel = () => {
-    const video = document.querySelector('video');
-    if (video) {
-        const rect = video.getBoundingClientRect();
-        controlPanel.style.top = `${rect.top + 10}px`;
-        controlPanel.style.right = `${window.innerWidth - rect.right + 10}px`;
+    if (document.fullscreenElement) {
+        // Em modo fullscreen
+        controlPanel.style.position = 'fixed';
+        controlPanel.style.top = '10px';
+        controlPanel.style.right = '10px';
+    } else {
+        // Não em modo fullscreen
+        controlPanel.style.position = 'absolute';
+        controlPanel.style.top = '10px';
+        controlPanel.style.right = '10px';
     }
 };
 
-// Atualiza a posição do painel de controle quando a página rola ou redimensiona
+// Carrega a velocidade preferida
+const preferredSpeed = localStorage.getItem('preferredSpeed');
+if (preferredSpeed) {
+    updateSpeed(parseFloat(preferredSpeed));
+}
+
+// Atualiza a posição do painel de controle quando a página rola, redimensiona ou entra/sai de fullscreen
 window.addEventListener('scroll', positionControlPanel);
 window.addEventListener('resize', positionControlPanel);
 window.addEventListener('fullscreenchange', positionControlPanel);
 
-// Inicializa a posição do painel de controle e exibe com delay
+// Inicializa a posição do painel de controle
 positionControlPanel();
-controlPanel.style.opacity = '0.5';
 
 // Mostrar o painel ao passar o mouse sobre o vídeo
 videoContainer.addEventListener('mouseenter', () => {
@@ -116,4 +130,15 @@ videoContainer.addEventListener('mouseenter', () => {
 
 videoContainer.addEventListener('mouseleave', () => {
     controlPanel.style.opacity = '0.5';
+});
+
+// Atalhos de teclado para controlar a velocidade
+window.addEventListener('keydown', (event) => {
+    if (event.key === '=') {
+        speedUpButton.click(); // Aumenta a velocidade com '='
+    } else if (event.key === '-') {
+        slowDownButton.click(); // Diminui a velocidade com '-'
+    } else if (event.key === '0') {
+        resetButton.click(); // Reseta a velocidade com '0'
+    }
 });
