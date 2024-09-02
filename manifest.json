@@ -1,27 +1,19 @@
 {
-    "manifest_version": 3,
-    "name": "Video Speed Controller",
-    "version": "1.0",
-    "description": "Controla a velocidade de qualquer vídeo em qualquer página.",
-    "permissions": [
-      "activeTab"
-    ],
-    "action": {
-      "default_icon": {
-        "500": "icons/icon.png"
-      }
-    },
-    "background": {
-      "service_worker": "background.js"
-    },
-    "content_scripts": [
-      {
-        "matches": ["*://*/*"],
-        "js": ["content.js"]
-      }
-    ],
-    "icons": {
-      "500": "icons/icon.png"
+  "manifest_version": 3,
+  "name": "Video Speed Controller",
+  "version": "1.0",
+  "description": "Controla a velocidade de qualquer vídeo em qualquer página.",
+  "permissions": [
+    "activeTab"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["*://*/*"],
+      "js": ["content.js"],
+      "css": ["styles.css"]
     }
+  ],
+  "icons": {
+    "500": "icons/icon.png"
   }
-  
+}
