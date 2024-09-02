@@ -10,9 +10,6 @@
     transition: opacity 0.3s;
     user-select: none;
     font-family: Arial, sans-serif;
-    position: fixed; /* Fixado no canto superior esquerdo */
-    top: 10px;
-    left: 10px;
 }
 
 .video-control-button {
@@ -22,7 +19,7 @@
     cursor: pointer;
     padding: 3px;
     margin: 0 3px;
-    font-size: 16px; /* Reduzido para tornar o painel menor */
+    font-size: 16px;
     line-height: 1;
     display: flex;
     align-items: center;
@@ -32,7 +29,59 @@
 .video-speed-display {
     margin: 0 5px;
     font-weight: bold;
-    min-width: 30px; /* Menor para se ajustar ao novo tamanho */
+    min-width: 30px;
     text-align: center;
-    font-size: 14px; /* Um pouco menor para compactar */
+    font-size: 14px;
+}
+
+.yt-video-control-panel {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    background-color: rgba(30, 30, 30, 0.9); /* Fundo mais escuro */
+    padding: 5px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    z-index: 10000;
+    font-family: Arial, sans-serif;
+    gap: 10px;
+}
+
+.yt-video-icon-button {
+    background-color: transparent;
+    color: var(--yt-spec-text-primary); /* Adaptado ao tema */
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    margin: 0;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.3s ease;
+}
+
+.yt-video-icon-button:hover {
+    color: var(--yt-spec-call-to-action); /* Destaque adaptado ao tema */
+}
+
+.yt-video-speed-button {
+    background-color: transparent;
+    color: var(--yt-spec-text-primary); /* Adaptado ao tema */
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.3s ease;
+}
+
+.yt-video-speed-value {
+    margin-left: 5px;
+}
+
+.yt-video-speed-button:hover {
+    color: var(--yt-spec-call-to-action); /* Destaque adaptado ao tema */
 }
